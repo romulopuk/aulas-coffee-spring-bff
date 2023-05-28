@@ -1,3 +1,4 @@
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+  packagesToScan: com.com.coffeeandit.transactionbff.api
