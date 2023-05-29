@@ -60,10 +60,14 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Erro de autorização dessa API"),
             @ApiResponse(responseCode = "404", description = "Recurso não encontrado.")})
     @Parameters(value = {@Parameter(name = "id", in = ParameterIn.PATH)})
-    @GetMapping(value = "/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<TransactionDto> buscarTransacao(@PathVariable("id") final String uuid) {
-        return Mono.empty();
+        final Optional<TransactionDto> transactionDto = service.findById(uuid);
+        if (transactionDto.isPresent()) {
+            return Mono.just(transactionDto.get());
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Impossível encontrar recurso.");
     }
 
     @Operation(description = "API para remover as transações persistidas.")
@@ -73,8 +77,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Erro de autorização dessa API"),
             @ApiResponse(responseCode = "404", description = "Recurso não encontrado.")})
     @Parameters(value = {@Parameter(name = "id", in = ParameterIn.PATH)})
-    @DeleteMapping(value = "/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<TransactionDto> removerTransacao(@PathVariable("id") final String uuid) {
         return Mono.empty();
     }
